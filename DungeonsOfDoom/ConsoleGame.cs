@@ -34,7 +34,8 @@ namespace DungeonsOfDoom
             if (player.StarvedToDeath)
             {
                 GameOver();
-            } else if(CountRemainingMonsters() == 0 && CountRemainingBosses() == 0)
+            } 
+            else if(CountRemainingMonsters() == 0 && CountRemainingBosses() == 0)
             {
                 ShowWinningScreen();
             }
