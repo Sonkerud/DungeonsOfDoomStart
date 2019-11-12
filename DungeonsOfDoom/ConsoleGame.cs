@@ -31,8 +31,29 @@ namespace DungeonsOfDoom
                 FightWithMonster(player.X, player.Y);
                 DisplayStats();
             } while (player.StarvedToDeath || (CountRemainingMonsters() == 0 && CountRemainingBosses() == 0));
-            GameOver();
+            if (player.StarvedToDeath)
+            {
+                GameOver();
+            } else if(CountRemainingMonsters() == 0 && CountRemainingBosses() == 0)
+            {
+                ShowWinningScreen();
+            }
+            
         }
+
+        private void ShowWinningScreen()
+        {
+            Console.Clear();
+           
+            Console.WriteLine(" __      __.__                           ._.");
+            Console.WriteLine("/  \\    /  \\__| ____   ____   ___________| |");
+            Console.WriteLine("\\   \\/\\/   /  |/    \\ /    \\_/ __ \\_  __ \\ |");
+            Console.WriteLine(" \\        /|  |   |  \\   |  \\  ___/|  | \\/\\|");
+            Console.WriteLine("  \\__/\\  / |__|___|  /___|  /\\___  >__|   __");
+            Console.WriteLine("       \\/          \\/     \\/     \\/       \\/");
+
+        }
+
         private void CreatePlayer()
         {
             player = new Player(90, 30, '@', 1, 1);
@@ -403,6 +424,8 @@ namespace DungeonsOfDoom
         {
             Console.Clear();
             Console.WriteLine("Game over...");
+            Console.WriteLine("You starved to death dude. Wtf. So much Pizza.");
+            Console.WriteLine("How is it possible? Well well. Try again.");
             Console.ReadKey();
             Play();
         }
