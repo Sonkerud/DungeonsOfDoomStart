@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DungeonsOfDoom.Items
 {
-        public abstract class Item: ICadaver
+        public abstract class Item: IBagable
     {
         public string Name { get; set; }
         public int Kcal { get; set; }

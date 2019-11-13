@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DungeonsOfDoom.Characters
 {
-        public abstract class Character : ICadaver
+        public abstract class Character : IBagable
     {
         public char Symbol { get; set; }
         private int hunger;
@@ -38,7 +38,7 @@ namespace DungeonsOfDoom.Characters
         }
         public string Name { get; set; }
         public int Eaten { get; set; }
-        public List<ICadaver> Backpack { get; set; }
+        public List<IBagable> Backpack { get; set; }
 
         public Character(int hunger, int health, char symbol)
         {

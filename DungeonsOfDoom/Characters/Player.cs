@@ -19,7 +19,7 @@ namespace DungeonsOfDoom.Characters
         {
             X = x;
             Y = y;
-            Backpack = new List<ICadaver>();
+            Backpack = new List<IBagable>();
         }
 
         public override void Attack(Character opponent, int dice, int input)

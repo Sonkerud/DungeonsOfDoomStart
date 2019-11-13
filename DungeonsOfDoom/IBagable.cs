@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DungeonsOfDoom
 {
-    public interface ICadaver
+    public interface IBagable
     {
      string Name { get; set; }
      int Eaten { get; set; }

@@ -518,7 +518,6 @@ namespace DungeonsOfDoom
                 if (!Console.KeyAvailable)
                 {
                     room.Monster.Attack(player, dice, input);
-
                     switch (dice)
                     {
                         case 1:
@@ -538,7 +537,6 @@ namespace DungeonsOfDoom
                             {
                                 Console.SetCursorPosition(55, 11);
                                 TextProcessor.AnimateText($"{monster.Name} fick tag på dig och stal en pizza eller nått! Attans!                 ", 1000);
-
                             }
                             else
                             {
@@ -549,16 +547,12 @@ namespace DungeonsOfDoom
                         case 3:
                             Console.SetCursorPosition(55, 11);
                             TextProcessor.AnimateText($"Smidig som en iller undvek du {monster.Name}! Du får en öl!            ", 0);
-
-
                             break;
                         default:
                             break;
                     }
                 }
-                
             }
-
          
         }
         private int CountRemainingMonsters()
@@ -593,26 +587,6 @@ namespace DungeonsOfDoom
             return (bossCount);
         }
 
-        //private List<ISymbolInterface> CollectSymbols()
-        //{
-        //    List<ISymbolInterface> symbolList = new List<ISymbolInterface> ();
-        //    for (int x = 0; x < world.GetLength(0)-1; x++)
-        //    {
-        //        for (int y = 0; y < world.GetLength(1)-1; y++)
-        //        {
-        //            Room room = world[x, y];
-        //            if (room.Item != null)
-        //            {
-        //                symbolList.Add(room.Item);
-        //            }
-        //            if (room.Monster != null)
-        //            {
-        //                symbolList.Add(room.Monster);
-        //            }
-        //        }
-        //    }
-        //    return symbolList;
-        //}
 
         private void GameOver()
         {
