@@ -9,7 +9,7 @@ namespace DungeonsOfDoom.Characters
 {
     class Player : Character
     {
-        Random random = new Random();
+        
         public int X { get; set; }
         public int Y { get; set; }
         public bool StarvedToDeath { get { return Hunger < 100; } }
@@ -19,7 +19,7 @@ namespace DungeonsOfDoom.Characters
         {
             X = x;
             Y = y;
-            Backpack = new List<Item>();
+            Backpack = new List<ICadaver>();
         }
 
         public override void Attack(Character opponent, int dice, int input)
@@ -29,6 +29,7 @@ namespace DungeonsOfDoom.Characters
                 opponent.Health -= 20;
                 if (opponent.Health < 1)
                 {
+                    Backpack.Add(ConsoleGame.world[X, Y].Monster);
                     ConsoleGame.world[X,Y].Monster = null;
                 }
             }
@@ -47,15 +48,9 @@ namespace DungeonsOfDoom.Characters
 
                 if (Hunger >= 5)
                 {
-                    if (item is Beer)
-                    {
-                        Hunger -= 5;
-                    } 
-                    else if (item is Pizza) 
-                    {
-                        Hunger -= 10;
-                    }
-
+                   
+                        Hunger -= item.Eaten;
+               
                     Backpack.RemoveAt(0);
                 }
             }

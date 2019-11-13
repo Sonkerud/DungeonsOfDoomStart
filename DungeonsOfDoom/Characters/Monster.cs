@@ -9,11 +9,11 @@ namespace DungeonsOfDoom.Characters
 {
     class Monster : Character
     {
-        public string Type { get; set; }
-        public bool IsDead { get { return Health < 0; } }
-        public Monster(int hunger, int health, char symbol, string type) : base(hunger, health, symbol) 
+        //public string Name { get; set; }
+        public bool IsDead { get { return Health == 0; } }
+        public Monster(int hunger, int health, char symbol, string name) : base(hunger, health, symbol) 
         {
-            Type = type;
+            Name = name;
         }
 
         public override void Attack(Character character, int dice, int input)
@@ -35,7 +35,7 @@ namespace DungeonsOfDoom.Characters
                     }
                     break;
                 case 3:
-                    character.Backpack.Add(new Beer("Sofiero",200,'Ö'));
+                    character.Backpack.Add(new Beer("Sofiero",200,'Ö', 5));
                     break;
                 default:
                     break;

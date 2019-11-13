@@ -6,7 +6,8 @@ namespace DungeonsOfDoom.Items
 {
     class Beer : Item
     {
-        public Beer(string name, int kcal, char symbol) : base(name, kcal, symbol) 
+
+        public Beer(string name, int kcal, char symbol, int eaten) : base(name, kcal, symbol, eaten) 
         {
            
         }

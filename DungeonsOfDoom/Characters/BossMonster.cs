@@ -8,8 +8,6 @@ namespace DungeonsOfDoom.Characters
 {
     class BossMonster : Monster
     {
-        Random random = new Random();
-
         public BossMonster() : base(30, 100, 'B', "Bossmonstret")
         {
 
@@ -17,35 +15,25 @@ namespace DungeonsOfDoom.Characters
 
         public override void Attack(Character character, int dice, int input)
         {
-            dice = random.Next(1, 3);
-            Console.SetCursorPosition(55, 9);
-            Console.WriteLine("Bossen är ute efter dig!                            ");
-
             switch (dice)
             {
                 case 1:
-
-                    Console.SetCursorPosition(55, 11);
-                    Console.WriteLine("Bossen fick tag på dig och gjorde dig massa hungrig!                 ");
-                    Health += 5;
-                    character.Hunger += 30;
-
+                    if (character.Backpack.Count() > 0)
+                    {
+                        character.Backpack.RemoveRange(0, 1);
+                        Health += 5;
+                    }
                     break;
                 case 2:
-                    if (Health >= 50)
+                    if (character.Backpack.Count() > 0)
                     {
-                        Health -= 50;
-                        Console.SetCursorPosition(55, 11);
-                        Console.WriteLine("Oj vilka moves! Bossen halkade! -50 health!                ");
+                        character.Backpack.RemoveRange(0, 1);
+                        Health += 5;
                     }
-                    else if (Health <50)
-                    {
-                        Health = 0;
-                        Console.SetCursorPosition(55, 11);
-                        Console.WriteLine("Bossen dog !                            ");
-                        ConsoleGame.world[ConsoleGame.player.X, ConsoleGame.player.Y].Monster = null;
-                    }
-                      break;
+                    break;
+                case 3:
+                    character.Backpack.Add(new Beer("Sofiero", 200, 'Ö', 5));
+                    break;
                 default:
                     break;
             }

@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 
 namespace DungeonsOfDoom.Items
 {
-    abstract class Item
+        public abstract class Item: ICadaver
     {
         public string Name { get; set; }
         public int Kcal { get; set; }
         public char Symbol { get; set; }
+        public int Eaten { get; set; }
 
-        public Item(string name, int kcal, char symbol)
+        public Item(string name, int kcal, char symbol, int eaten)
         {
             Name = name;
             Kcal = kcal;
             Symbol = symbol;
+            Eaten = eaten;
         }
     }
 }
