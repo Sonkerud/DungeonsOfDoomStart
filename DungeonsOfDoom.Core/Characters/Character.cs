@@ -47,7 +47,7 @@ namespace DungeonsOfDoom.Characters
             Symbol = symbol;
         }
 
-        public abstract void Attack(Character character, int dice, int input);
+        public abstract void Attack(Character character, int dice, int input, Room[,] world);
         public virtual void EatItem() { }
     }
 }

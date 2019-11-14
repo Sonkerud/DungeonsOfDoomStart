@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DungeonsOfDoom.UtilityClasses
+namespace UtilityLibrary
 {
-    public static class StartUp
+   enum Colors
     {
+        Red,Blue,Green,Yellow,White
     }
 }

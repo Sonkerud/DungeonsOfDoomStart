@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DungeonsOfDoom
 {
-    class Room
+    public class Room
     {
         public Monster Monster { get; set; }
         public Item Item { get; set; }

@@ -9,10 +9,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UtilityLibrary;
 
 namespace DungeonsOfDoom
 {
-    class ConsoleGame
+    public class ConsoleGame
     {
         public static Player player;
         public static EnemyPlayer enemyPlayer;
@@ -21,12 +22,8 @@ namespace DungeonsOfDoom
 
         public void Play()
         {
-            //var AllSymbols = CollectSymbols();
-            //foreach (var item in AllSymbols)
-            //{
-            //    Console.WriteLine(item.Symbol);
-            //}
-
+            //Console.ForegroundColor = ConsoleColor.Red;
+            //Console.BackgroundColor = ConsoleColor.White;
             BuildGame();
             RunGame();
             EndGame();
@@ -57,8 +54,8 @@ namespace DungeonsOfDoom
                     MoveEnemyPlayer(enemyPlayer);
                     var key =  AskForMovement(player);
                     //AskForMovement(enemyPlayer,key);
-                    DisplayPartOfWorld(player,player.X, player.Y);
-                    DisplayPartOfWorld(enemyPlayer,enemyPlayer.X, enemyPlayer.Y);
+                    //DisplayPartOfWorld(player,player.X, player.Y);
+                   // DisplayPartOfWorld(enemyPlayer,enemyPlayer.X, enemyPlayer.Y);
 
                     AddItem();
                     FightWithMonster(player.X, player.Y);
@@ -66,7 +63,7 @@ namespace DungeonsOfDoom
                     Thread.Sleep(100);
                 }
             }
-            while (player.StarvedToDeath || (CountRemainingMonsters() == 0 && CountRemainingBosses() == 0));
+            while (!player.StarvedToDeath || (CountRemainingMonsters() == 0 && CountRemainingBosses() == 0));
         }
         private void EndGame()
         {
@@ -86,7 +83,7 @@ namespace DungeonsOfDoom
             {
                 for (int x = 0; x < world.GetLength(0); x++)
                 {
-                    world[x, y].WorldObject = new WallObject();
+                    world[x, y].WorldObject = new WallObject('#');
                 }
             }
         }
@@ -94,10 +91,10 @@ namespace DungeonsOfDoom
         {
             if (x > 2)
             {
-                world[x - 3, 7].WorldObject = new WallObject();
-                world[x - 2, 7].WorldObject = new WallObject();
-                world[x - 1, 7].WorldObject = new WallObject();
-                world[x, 7].WorldObject = new WallObject();
+                world[x - 3, 7].WorldObject = new WallObject('#');
+                world[x - 2, 7].WorldObject = new WallObject('#');
+                world[x - 1, 7].WorldObject = new WallObject('#');
+                world[x, 7].WorldObject = new WallObject('#');
 
             }
 
@@ -163,6 +160,7 @@ namespace DungeonsOfDoom
         {
             string top = " _________________________________";
             string bottom = "|_________________________________|";
+            SetColor.SetTextColor('%');
 
             Console.SetCursorPosition(0, 16);
             Console.Write(top);
@@ -175,6 +173,8 @@ namespace DungeonsOfDoom
             }
             Console.SetCursorPosition(0, 24);
             Console.Write(bottom);
+            SetColor.SetTextColor('d');
+
         }
         private void CreateWorld()
         {
@@ -197,7 +197,7 @@ namespace DungeonsOfDoom
                     else if (percentage < 21)
                         world[x, y].Monster = new BossMonster();
                     else if (percentage < 30)
-                        world[x, y].WorldObject = new FenceObject();
+                        world[x, y].WorldObject = new FenceObject('|');
                 }
             }
 
@@ -205,28 +205,28 @@ namespace DungeonsOfDoom
             {
                 for (int y = 0; y < world.GetLength(1); y++)
                 {
-                    world[x, y].WorldObject = new WallObject();
+                    world[x, y].WorldObject = new WallObject('#');
                 }
             }
             for (int x = world.GetLength(0)-1; x < world.GetLength(0); x++)
             {
                 for (int y = 0; y < world.GetLength(1); y++)
                 {
-                    world[x, y].WorldObject = new WallObject();
+                    world[x, y].WorldObject = new WallObject('#');
                 }
             }
             for (int y = 0; y < 1; y++)
             {
                 for (int x = 0; x < world.GetLength(0); x++)
                 {
-                    world[x, y].WorldObject = new WallObject();
+                    world[x, y].WorldObject = new WallObject('#');
                 }
             }
             for (int y = world.GetLength(1) - 1; y < world.GetLength(1); y++)
             {
                 for (int x = 0; x < world.GetLength(0); x++)
                 {
-                    world[x, y].WorldObject = new WallObject();
+                    world[x, y].WorldObject = new WallObject('#');
                 }
             }
 
@@ -240,16 +240,29 @@ namespace DungeonsOfDoom
                 {
                     Room room = world[x, y];
                     if (player.X == x && player.Y == y)
+                    {
+                       // SetColor.SetTextColor(player.Symbol);
                         Console.Write(player.Symbol);
-                    else if (enemyPlayer.X == x && enemyPlayer.Y == y)
-                    Console.Write(enemyPlayer.Symbol);
-                    
+                    }
+                    else if (enemyPlayer.X == x && enemyPlayer.Y == y) 
+                    { 
+                        Console.Write(enemyPlayer.Symbol);
+                    }
                     else if (room.WorldObject != null)
+                    {
+                      //  SetColor.SetTextColor(room.WorldObject.Symbol);
                         Console.Write(room.WorldObject.Symbol);
+                    }
+
                     else if (room.Monster != null)
+                    {
+                      //  SetColor.SetTextColor(room.Monster.Symbol);
                         Console.Write(room.Monster.Symbol);
+                    }
                     else if (room.Item != null)
+                    {
                         Console.Write(room.Item.Symbol);
+                    }
                     else
                         Console.Write(" ");
                 }
@@ -257,7 +270,7 @@ namespace DungeonsOfDoom
             }
 
         }
-        private void DisplayPartOfWorld(Player character,int positionX, int positionY)
+        private void DisplayPartOfWorldEarlier(Player character,int positionX, int positionY)
         {
             for (int y = positionY-1; y < positionY+2; y++)
             {
@@ -265,24 +278,71 @@ namespace DungeonsOfDoom
                 {
                     Console.SetCursorPosition(x,y);
                     Room room = world[x, y];
-                    if (character.X == x && character.Y == y)
-                        Console.Write(character.Symbol);
-                    else if (room.WorldObject != null)
-                        Console.Write(room.WorldObject.Symbol);
-                    else if (room.Monster != null)
-                        Console.Write(room.Monster.Symbol);
-                    else if (room.Item != null)
-                        Console.Write(room.Item.Symbol);
 
+                    if (character.X == x && character.Y == y)
+                    {
+                       // SetColor.SetTextColor(character.Symbol);
+                        Console.Write(character.Symbol);
+                    }
+                    else if (room.WorldObject != null)
+                    {
+                       // SetColor.SetTextColor(room.WorldObject.Symbol);
+                        Console.Write(room.WorldObject.Symbol);
+                    }
+                    else if (room.Monster != null)
+                    {
+                        //SetColor.SetTextColor(room.Monster.Symbol);
+                        Console.Write(room.Monster.Symbol);
+                    }
+                    else if (room.Item != null)
+                    {
+                       // SetColor.SetTextColor(room.Item.Symbol);
+                        Console.Write(room.Item.Symbol);
+                    }
                     else
-                        Console.Write(" ");
+                        // Console.ForegroundColor = ConsoleColor.Black;    
+                         Console.Write(" ");
                 }
                 Console.WriteLine();
             }
 
         }
+        private void DisplayPartOfWorld(Player character, int x, int y)
+        {
+           
+                    Console.SetCursorPosition(x, y);
+                    Room room = world[x, y];
+
+                    if (character.X == x && character.Y == y)
+                    {
+                        // SetColor.SetTextColor(character.Symbol);
+                        Console.Write(character.Symbol);
+                    }
+                    else if (room.WorldObject != null)
+                    {
+                        // SetColor.SetTextColor(room.WorldObject.Symbol);
+                        Console.Write(room.WorldObject.Symbol);
+                    }
+                    else if (room.Monster != null)
+                    {
+                        //SetColor.SetTextColor(room.Monster.Symbol);
+                        Console.Write(room.Monster.Symbol);
+                    }
+                    else if (room.Item != null)
+                    {
+                        // SetColor.SetTextColor(room.Item.Symbol);
+                        Console.Write(room.Item.Symbol);
+                    }
+                    else
+                        // Console.ForegroundColor = ConsoleColor.Black;    
+                        Console.Write(" ");
+
+        }
+
         private void DisplayStats()
         {
+            SetColor.SetTextColor('#');
+
             Console.SetCursorPosition(1, 17);
             Console.WriteLine($"Hunger: {player.Hunger}   ");
 
@@ -309,6 +369,8 @@ namespace DungeonsOfDoom
             Console.WriteLine($"Monster kvar: {CountRemainingMonsters()}  ");
             Console.SetCursorPosition(1, 21);
             Console.WriteLine($"Bossar kvar: {CountRemainingBosses()}  ");
+            SetColor.SetTextColor('d');
+
         }
         private ConsoleKeyInfo AskForMovement(Player player)
         {
@@ -394,6 +456,9 @@ namespace DungeonsOfDoom
             if (world[player.X, player.Y - 1].WorldObject == null)
             {
                 player.Y--;
+                DisplayPartOfWorld(player, player.X, player.Y);
+                DisplayPartOfWorld(player, player.X, player.Y+1);
+
             }
         }
         private void MoveDown(Player player)
@@ -401,6 +466,8 @@ namespace DungeonsOfDoom
             if (world[player.X, player.Y + 1].WorldObject == null)
             {
                 player.Y++;
+                DisplayPartOfWorld(player, player.X, player.Y);
+                DisplayPartOfWorld(player, player.X , player.Y-1);
             }
         }
         private void MoveLeft(Player player)
@@ -408,6 +475,8 @@ namespace DungeonsOfDoom
             if (world[player.X - 1, player.Y].WorldObject == null)
             {
                 player.X--;
+                DisplayPartOfWorld(player, player.X, player.Y);
+                DisplayPartOfWorld(player, player.X + 1, player.Y);
             }
         }
         private void MoveRight(Player player)
@@ -415,6 +484,8 @@ namespace DungeonsOfDoom
             if (world[player.X + 1, player.Y].WorldObject == null)
             {
                 player.X++;
+                DisplayPartOfWorld(player, player.X, player.Y);
+                DisplayPartOfWorld(player, player.X-1, player.Y);
             }
         }
         private void AddItem()
@@ -427,6 +498,7 @@ namespace DungeonsOfDoom
         {
             Monster monster = world[x, y].Monster;
             Room room = world[x, y];
+
             //Clear fighting-text-field
             for (int i = 2; i < 13; i++)
             {
@@ -469,14 +541,14 @@ namespace DungeonsOfDoom
                         Console.SetCursorPosition(108, 3);
                     }
                 }
-                Console.SetCursorPosition(55, 5);
+                Console.SetCursorPosition(SetCursorConstant.SETCURSORFORFIGHTINGINFOX, SetCursorConstant.SETCURSORFORFIGHTINGINFOY+2);
 
                 //Player attacks
-                player.Attack(monster, dice, input);
+                player.Attack(monster, dice, input, world);
                 //Console information for player.attacks():
                 if (dice != input)
                 {
-                    Console.SetCursorPosition(55, 5);
+                    Console.SetCursorPosition(SetCursorConstant.SETCURSORFORFIGHTINGINFOX, SetCursorConstant.SETCURSORFORFIGHTINGINFOY + 2);
                     TextProcessor.AnimateText($"Du smaskade till {monster.Name} med en Hawaii!  ",0);
                     
                 
@@ -496,15 +568,15 @@ namespace DungeonsOfDoom
                     }
                     if (monster != null)
                     {
-                        Console.SetCursorPosition(55, 6);
+                        Console.SetCursorPosition(SetCursorConstant.SETCURSORFORFIGHTINGINFOX, SetCursorConstant.SETCURSORFORFIGHTINGINFOY + 3);
                         TextProcessor.AnimateText($"{monster.Name} health: {monster.Health}",500); 
                     }
                 }
                 else if (input == dice)
                 {
-                    Console.SetCursorPosition(55, 5);
+                    Console.SetCursorPosition(SetCursorConstant.SETCURSORFORFIGHTINGINFOX, SetCursorConstant.SETCURSORFORFIGHTINGINFOY + 2);
                     Console.WriteLine($"Aj aj! {monster.Name} högg dig i vaden!                ");
-                    Console.SetCursorPosition(55, 6);
+                    Console.SetCursorPosition(SetCursorConstant.SETCURSORFORFIGHTINGINFOX, SetCursorConstant.SETCURSORFORFIGHTINGINFOY + 3);
                     Console.WriteLine($"{monster.Name} health: {monster.Health}");
                 }
             }
@@ -517,7 +589,7 @@ namespace DungeonsOfDoom
 
                 if (!Console.KeyAvailable)
                 {
-                    room.Monster.Attack(player, dice, input);
+                    room.Monster.Attack(player, dice, input, world);
                     switch (dice)
                     {
                         case 1:

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DungeonsOfDoom.Items
 {
-    class Beer : Item
+    public class Beer : Item
     {
 
         public Beer(string name, int kcal, char symbol, int eaten) : base(name, kcal, symbol, eaten) 

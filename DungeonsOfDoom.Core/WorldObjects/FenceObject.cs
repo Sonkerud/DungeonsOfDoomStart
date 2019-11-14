@@ -4,12 +4,11 @@ using System.Text;
 
 namespace DungeonsOfDoom.WorldObjects
 {
-    class WorldObject
+    public class FenceObject : WorldObject
     {
-        public char Symbol { get; set; }
-        public WorldObject()
+        public FenceObject(char symbol) : base(symbol)
         {
-
+            //Symbol = '|';
         }
     }
 }

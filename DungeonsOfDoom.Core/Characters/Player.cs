@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace DungeonsOfDoom.Characters
 {
-    class Player : Character
+    public class Player : Character
     {
         
         public int X { get; set; }
         public int Y { get; set; }
-        public bool StarvedToDeath { get { return Hunger < 100; } }
+        public bool StarvedToDeath { get { return Hunger > 100; } }
 
 
         public Player(int hunger, int health, char symbol, int x, int y ) : base(hunger, health, symbol)
@@ -22,15 +22,15 @@ namespace DungeonsOfDoom.Characters
             Backpack = new List<IBagable>();
         }
 
-        public override void Attack(Character opponent, int dice, int input)
+        public override void Attack(Character opponent, int dice, int input, Room[,] world)
         {
             if (dice != input)
             {
                 opponent.Health -= 20;
                 if (opponent.Health < 1)
                 {
-                    Backpack.Add(ConsoleGame.world[X, Y].Monster);
-                    ConsoleGame.world[X,Y].Monster = null;
+                     Backpack.Add(opponent);
+                    world[X,Y].Monster = null;
                 }
             }
             else if (input == dice)

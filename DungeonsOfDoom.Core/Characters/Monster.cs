@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DungeonsOfDoom.Characters
 {
-    class Monster : Character
+    public class Monster : Character
     {
         //public string Name { get; set; }
         public bool IsDead { get { return Health == 0; } }
@@ -16,7 +16,7 @@ namespace DungeonsOfDoom.Characters
             Name = name;
         }
 
-        public override void Attack(Character character, int dice, int input)
+        public override void Attack(Character character, int dice, int input, Room[,] world)
         {
             switch (dice)
             {

@@ -25,9 +25,6 @@ namespace DungeonsOfDoomLibrary
         public static void AddTextToDictionary()
         {
             textToDisplayList.Add("Slåss med monstret! Ange siffra mellan 1 och 3:     ");
-            //textToDisplayList.Add($"Du smaskade till {monster.Type} med en Hawaii!  ");
-            //textToDisplayList.Add("Slåss med monstret! Ange siffra mellan 1 och 3:     ");
-
         }
     }
 }

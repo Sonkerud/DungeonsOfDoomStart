@@ -4,11 +4,12 @@ using System.Text;
 
 namespace DungeonsOfDoom.WorldObjects
 {
-    class WallObject : WorldObject
+    public class WorldObject
     {
-        public WallObject()
+        public char Symbol { get; set; }
+        public WorldObject(char symbol)
         {
-            Symbol = '#';
+            Symbol = symbol;
         }
     }
 }

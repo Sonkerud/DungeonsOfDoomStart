@@ -6,14 +6,14 @@ using System.Text;
 
 namespace DungeonsOfDoom.Characters
 {
-    class BossMonster : Monster
+    public class BossMonster : Monster
     {
         public BossMonster() : base(30, 100, 'B', "Bossmonstret")
         {
 
         }
 
-        public override void Attack(Character character, int dice, int input)
+        public override void Attack(Character character, int dice, int input, Room[,] world)
         {
             switch (dice)
             {
