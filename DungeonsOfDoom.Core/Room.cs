@@ -15,5 +15,6 @@ namespace DungeonsOfDoom
         public Item Item { get; set; }
         public WorldObject WorldObject { get; set; }
         public BossMonster BossMonster { get; set; }
+        
     }
 }

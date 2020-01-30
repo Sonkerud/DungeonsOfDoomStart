@@ -7,9 +7,19 @@ using System.Threading.Tasks;
 
 namespace DungeonsOfDoom.Characters
 {
+    public delegate void WhenAttackEventHandler(object source, EventArgs args);
+
     public class Monster : Character
     {
-        //public string Name { get; set; }
+        public event WhenAttackEventHandler AttackEvent;
+        public virtual void OnAttackEvent()
+        {
+            if (AttackEvent != null)
+            {
+                AttackEvent(this, EventArgs.Empty);
+            }
+        }
+
         public bool IsDead { get { return Health == 0; } }
         public Monster(int hunger, int health, char symbol, string name) : base(hunger, health, symbol) 
         {

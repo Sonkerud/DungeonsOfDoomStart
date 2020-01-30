@@ -13,17 +13,25 @@ using UtilityLibrary;
 
 namespace DungeonsOfDoom
 {
+    public delegate void EventDelegate();
+
     public class ConsoleGame
     {
+        public event EventDelegate OnSomethingEventDel;
+
         public static Player player;
         public static EnemyPlayer enemyPlayer;
         public static Room[,] world; 
         public Random random = new Random();
 
+        public void OnMonsterAttack(object source, EventArgs e)
+        {
+
+            Console.WriteLine("A monster attacked");
+        }
+
         public void Play()
         {
-            //Console.ForegroundColor = ConsoleColor.Red;
-            //Console.BackgroundColor = ConsoleColor.White;
             BuildGame();
             RunGame();
             EndGame();
@@ -45,23 +53,28 @@ namespace DungeonsOfDoom
         {
             do
             {
-                for (int i = 0; i < world.GetLength(0); i++)
-                {
-                    CreateSpaceInMovingWall(i);
-                    DisplayStats();
-                    BuildTextDisplayBox();
-                    
-                    MoveEnemyPlayer(enemyPlayer);
-                    var key =  AskForMovement(player);
-                    //AskForMovement(enemyPlayer,key);
-                    //DisplayPartOfWorld(player,player.X, player.Y);
-                   // DisplayPartOfWorld(enemyPlayer,enemyPlayer.X, enemyPlayer.Y);
+                    for (int i = 0; i < world.GetLength(0); i++)
+                    {
+                       
+                        CreateSpaceInMovingWall(i);
+                    if (player.StarvedToDeath)
+                    {
+                        GameOver();
+                    }
+                        DisplayStats();
+                        BuildTextDisplayBox();
 
-                    AddItem();
-                    FightWithMonster(player.X, player.Y);
-                    DisplayStats();
-                    Thread.Sleep(100);
-                }
+                        MoveEnemyPlayer(enemyPlayer, player, i);
+                        var key = AskForMovement(player);
+                        // AskForMovement(enemyPlayer,key);
+                        // DisplayPartOfWorld(player,player.X, player.Y);
+                        // DisplayPartOfWorld(enemyPlayer,enemyPlayer.X, enemyPlayer.Y);
+
+                        AddItem();
+                        FightWithMonster(player.X, player.Y);
+                        DisplayStats();
+                        Thread.Sleep(100);
+                    }
             }
             while (!player.StarvedToDeath || (CountRemainingMonsters() == 0 && CountRemainingBosses() == 0));
         }
@@ -89,24 +102,27 @@ namespace DungeonsOfDoom
         }
         private void CreateSpaceInMovingWall(int x)
         {
-            if (x > 2)
+            if (x-2 != player.X)
             {
-                world[x - 3, 7].WorldObject = new WallObject('#');
-                world[x - 2, 7].WorldObject = new WallObject('#');
-                world[x - 1, 7].WorldObject = new WallObject('#');
-                world[x, 7].WorldObject = new WallObject('#');
+                if (x > 2)
+                {
+                    world[x - 3, 7].WorldObject = new WallObject('#');
+                    world[x - 2, 7].WorldObject = new WallObject('#');
+                    world[x - 1, 7].WorldObject = new WallObject('#');
+                    world[x, 7].WorldObject = new WallObject('#');
+                }
 
+                if (x < world.GetLength(0) - 2)
+                {
+                    world[x, 7].WorldObject = null;
+                    world[x + 1, 7].WorldObject = null;
+                    world[x + 2, 7].WorldObject = null;
+                }
             }
-
-            if (x < world.GetLength(0)-2)
+            else if (x-2 == player.X && player.Y == 7)
             {
-                world[x, 7].WorldObject = null;
-                world[x + 1, 7].WorldObject = null;
-                world[x + 2, 7].WorldObject = null;
+                player.Hunger = 11000;
             }
-                   
-            
-            
             Console.SetCursorPosition(0,7);
             for (int i = 0; i < world.GetLength(0); i++)
             {
@@ -241,8 +257,10 @@ namespace DungeonsOfDoom
                     Room room = world[x, y];
                     if (player.X == x && player.Y == y)
                     {
-                       // SetColor.SetTextColor(player.Symbol);
+                        SetColor.SetTextColor(player.Symbol);
                         Console.Write(player.Symbol);
+                        SetColor.SetTextColor('d');
+
                     }
                     else if (enemyPlayer.X == x && enemyPlayer.Y == y) 
                     { 
@@ -250,18 +268,25 @@ namespace DungeonsOfDoom
                     }
                     else if (room.WorldObject != null)
                     {
-                      //  SetColor.SetTextColor(room.WorldObject.Symbol);
+                        SetColor.SetTextColor(room.WorldObject.Symbol);
                         Console.Write(room.WorldObject.Symbol);
+                        SetColor.SetTextColor('d');
+
                     }
 
                     else if (room.Monster != null)
                     {
-                      //  SetColor.SetTextColor(room.Monster.Symbol);
+                        SetColor.SetTextColor(room.Monster.Symbol);
                         Console.Write(room.Monster.Symbol);
+                        SetColor.SetTextColor('d');
+
                     }
                     else if (room.Item != null)
                     {
+                        SetColor.SetTextColor(room.Item.Symbol);
                         Console.Write(room.Item.Symbol);
+                        SetColor.SetTextColor('d');
+
                     }
                     else
                         Console.Write(" ");
@@ -315,12 +340,12 @@ namespace DungeonsOfDoom
 
                     if (character.X == x && character.Y == y)
                     {
-                        // SetColor.SetTextColor(character.Symbol);
+                        SetColor.SetTextColor(character.Symbol);
                         Console.Write(character.Symbol);
                     }
                     else if (room.WorldObject != null)
                     {
-                        // SetColor.SetTextColor(room.WorldObject.Symbol);
+                        //SetColor.SetTextColor(room.WorldObject.Symbol);
                         Console.Write(room.WorldObject.Symbol);
                     }
                     else if (room.Monster != null)
@@ -427,29 +452,75 @@ namespace DungeonsOfDoom
             }
         }
 
-        private void MoveEnemyPlayer(Player enemy)
+        private void MoveEnemyPlayer(Player enemy, Player player, int i)
         {
-            Random random = new Random();
-            int dice = random.Next(1, 5);
-            switch (dice)
+            if (i%3==0)
             {
-                case 1:
-                    MoveRight(enemy);
-                    break;
-                case 2:
-                    MoveLeft(enemy);
-                    break;
-                case 3:
-                    MoveUp(enemy);
-                    break;
-                case 4:
-                    MoveDown(enemy);
-                    break;
-               default:
-                    break;
-            }
+                int[] directionList = new int[10];
+                // Om X är positivt är enemy höger om player
+                int movementDirectionX =  enemy.X - player.X;
+                // Om Y är positivt är enemy nedanför player
+                int movementDirectionY =  enemy.Y - player.Y;
+
+                if (movementDirectionX >= 0)
+                {
+                    directionList[0] = 2;
+                    directionList[1] = 2;
+                    directionList[2] = 2;
+                    directionList[3] = 2;
+                    directionList[8] = 1;
+                }
+                else
+                {
+                    directionList[0] = 1;
+                    directionList[1] = 1;
+                    directionList[2] = 1;
+                    directionList[3] = 1;
+                    directionList[8] = 2;
+                }
+
+                if (movementDirectionY >= 0)
+                {
+                    directionList[4] = 3;
+                    directionList[5] = 3;
+                    directionList[6] = 3;
+                    directionList[7] = 3;
+                    directionList[9] = 4;
+                }
+                else
+                {
+                    directionList[4] = 4;
+                    directionList[5] = 4;
+                    directionList[6] = 4;
+                    directionList[7] = 4;
+                    directionList[9] = 3;
+                }
+
+                Random random = new Random();
+                int dice = random.Next(0, 9);
+
+
+                switch (directionList[dice])
+                {
+                    case 1:
+                        MoveRight(enemy);
+                        break;
+                    case 2:
+                        MoveLeft(enemy);
+                        break;
+                    case 3:
+                        MoveUp(enemy);
+                        break;
+                    case 4:
+                        MoveDown(enemy);
+                        break;
+                    default:
+                        break;
+                }
+            }   
         }
-                
+            
+        
         private void MoveUp(Player player)
         {
 
@@ -458,7 +529,6 @@ namespace DungeonsOfDoom
                 player.Y--;
                 DisplayPartOfWorld(player, player.X, player.Y);
                 DisplayPartOfWorld(player, player.X, player.Y+1);
-
             }
         }
         private void MoveDown(Player player)
